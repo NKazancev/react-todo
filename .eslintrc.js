@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  parser: '@babel/eslint-parser',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -11,6 +11,9 @@ module.exports = {
   settings: {
     react: {
       version: 'detect',
+    },
+    'import/resolver': {
+      typescript: {},
     },
   },
   extends: [
@@ -28,8 +31,17 @@ module.exports = {
     quotes: ['error', 'single'],
     'prettier/prettier': 'error',
     'linebreak-style': [0, 'unix'],
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'react/jsx-filename-extension': [1, { extensions: ['.ts', '.tsx', '.js'] }],
     'import/no-unresolved': [2, { caseSensitive: false }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        ts: 'never',
+        tsx: 'never',
+        js: 'never',
+      },
+    ],
     'react/sort-comp': [
       2,
       {
@@ -39,20 +51,19 @@ module.exports = {
     'import/order': [
       2,
       {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
         'newlines-between': 'always',
       },
     ],
     'react/react-in-jsx-scope': 'off',
-    'react/require-default-props': 'off',
+    'react/prop-types': 'off',
+    'react/no-unused-prop-types': 'off',
+    'default-param-last': 'off',
+    'no-unused-vars': 'off',
     'no-use-before-define': 'off',
+    'react/function-component-definition': 'off',
+    'no-undef': 'off',
+    'prefer-template': 'off',
   },
   ignorePatterns: ['node_modules', 'build'],
 };

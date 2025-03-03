@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: path.resolve(__dirname, '..', 'src', 'index.js'),
+  entry: path.resolve(__dirname, '..', 'src', 'index.tsx'),
 
   output: {
     filename: '[name].bundle.js',
@@ -11,7 +11,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.ts', '.tsx', '.js'],
     modules: [path.resolve(__dirname, '..', 'src'), 'node_modules'],
   },
 
@@ -26,7 +26,7 @@ module.exports = {
         type: 'asset/resource',
       },
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         use: 'babel-loader',
         exclude: /node_modules/,
       },

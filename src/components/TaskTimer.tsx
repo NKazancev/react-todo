@@ -1,17 +1,18 @@
-import PropTypes from 'prop-types';
+import { FC } from 'react';
 
 import playIcon from '../assets/play.svg';
 import pauseIcon from '../assets/pause.svg';
+import { ITask } from '../task';
 
-export default function TaskTimer({
+const TaskTimer: FC<Pick<ITask, 'time' | 'startTimer' | 'stopTimer'>> = ({
   time = 0,
-  startTimer = () => {},
-  stopTimer = () => {},
-}) {
-  const seconds = (time % 60).toString().padStart(2, 0);
+  startTimer,
+  stopTimer,
+}) => {
+  const seconds = (time % 60).toString().padStart(2, '0');
   const minutes = Math.floor(time / 60)
     .toString()
-    .padStart(2, 0);
+    .padStart(2, '0');
 
   return (
     <div className="timer">
@@ -31,10 +32,6 @@ export default function TaskTimer({
       </div>
     </div>
   );
-}
-
-TaskTimer.propTypes = {
-  time: PropTypes.number,
-  stopTimer: PropTypes.func,
-  startTimer: PropTypes.func,
 };
+
+export default TaskTimer;

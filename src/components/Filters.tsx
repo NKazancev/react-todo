@@ -1,6 +1,11 @@
-import PropTypes from 'prop-types';
+import { FC } from 'react';
 
-export default function Filters({ filter = 'all', setFilter = () => {} }) {
+interface IFilters {
+  filter: string;
+  setFilter: (filter: string) => void;
+}
+
+const Filters: FC<IFilters> = ({ filter = 'all', setFilter }) => {
   const btn = 'tools__button';
   const selectedBtn = 'tools__button selected';
 
@@ -8,8 +13,7 @@ export default function Filters({ filter = 'all', setFilter = () => {} }) {
     <div className="tools__filters">
       <button
         type="button"
-        data-filter="all"
-        onClick={(e) => setFilter(e.target.dataset.filter)}
+        onClick={() => setFilter('all')}
         className={filter === 'all' ? selectedBtn : btn}
       >
         All
@@ -17,8 +21,7 @@ export default function Filters({ filter = 'all', setFilter = () => {} }) {
 
       <button
         type="button"
-        data-filter="active"
-        onClick={(e) => setFilter(e.target.dataset.filter)}
+        onClick={() => setFilter('active')}
         className={filter === 'active' ? selectedBtn : btn}
       >
         Active
@@ -26,17 +29,13 @@ export default function Filters({ filter = 'all', setFilter = () => {} }) {
 
       <button
         type="button"
-        data-filter="completed"
-        onClick={(e) => setFilter(e.target.dataset.filter)}
+        onClick={() => setFilter('completed')}
         className={filter === 'completed' ? selectedBtn : btn}
       >
         Completed
       </button>
     </div>
   );
-}
-
-Filters.propTypes = {
-  filter: PropTypes.string,
-  setFilter: PropTypes.func,
 };
+
+export default Filters;

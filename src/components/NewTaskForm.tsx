@@ -1,18 +1,41 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 
-export default function NewTaskForm({ addTask = () => {} }) {
+import { ITask } from '../task';
+
+interface INewTaskForm {
+  addTask: (task: ITask) => void;
+}
+
+const NewTaskForm: FC<INewTaskForm> = ({ addTask }) => {
   const [text, setText] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
 
-  const onSubmit = (event) => {
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const time = minutes * 60 + Number(seconds);
-    addTask(text, time);
-    setText('');
-    setMinutes('');
-    setSeconds('');
+    if (text.match(/[^\s]/g)) {
+      const time = Number(minutes) * 60 + Number(seconds);
+
+      let task: ITask = {
+        id: String(Math.random()).slice(2, 8),
+        text: text.trim(),
+        done: false,
+        date: new Date(),
+        paused: true,
+        reversed: false,
+        time: Number(minutes) * 60 + Number(seconds),
+      };
+      if (time === 0) {
+        task = { ...task, reversed: false };
+      } else {
+        task = { ...task, reversed: true };
+      }
+
+      addTask(task);
+      setText('');
+      setMinutes('');
+      setSeconds('');
+    }
   };
 
   return (
@@ -47,8 +70,6 @@ export default function NewTaskForm({ addTask = () => {} }) {
       </p>
     </form>
   );
-}
-
-NewTaskForm.propTypes = {
-  addTask: PropTypes.func,
 };
+
+export default NewTaskForm;

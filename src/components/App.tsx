@@ -1,47 +1,30 @@
 import { useState } from 'react';
 
+import { ITask } from '../task';
+import filterTasks from '../utils/filterTasks';
+
 import NewTaskForm from './NewTaskForm';
 import TaskList from './TaskList';
 import Tools from './Tools';
 
 export default function App() {
-  const [toDoList, setToDoList] = useState([]);
+  const [toDoList, setToDoList] = useState<Array<ITask>>([]);
   const [filter, setFilter] = useState('all');
 
-  const addTask = (text, time) => {
-    if (text.match(/[^\s]/g)) {
-      let task = {
-        id: String(Math.random()).slice(2, 8),
-        text: text.trim(),
-        done: false,
-        date: new Date(),
-        paused: true,
-        reversed: undefined,
-        time,
-      };
+  const tasks = filterTasks(toDoList, filter);
+  const uncompletedTasks = filterTasks(toDoList, 'active').length;
 
-      if (time === 0) {
-        task = { ...task, reversed: false };
-      } else {
-        task = { ...task, reversed: true };
-      }
-      setToDoList([...toDoList, task]);
-    }
-  };
+  const addTask = (task: ITask) => setToDoList([...toDoList, task]);
 
-  const completeTask = (id) => {
+  const completeTask = (id: string) => {
     const index = toDoList.findIndex((task) => task.id === id);
     const oldTask = toDoList[index];
-    const newTask = {
-      ...oldTask,
-      done: !oldTask.done,
-      paused: true,
-    };
+    const newTask = { ...oldTask, done: !oldTask.done, paused: true };
     stopTimer(id);
     setToDoList(toDoList.with(index, newTask));
   };
 
-  const editTask = (id, text) => {
+  const editTask = (id: string, text: string) => {
     if (text.match(/[^\s]/g)) {
       const index = toDoList.findIndex((task) => task.id === id);
       const oldTask = toDoList[index];
@@ -50,13 +33,15 @@ export default function App() {
     }
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = (id: string) => {
     const newList = toDoList.filter((task) => task.id !== id);
     setToDoList(newList);
   };
 
-  const startTimer = (id) => {
-    const { paused } = toDoList.find((task) => task.id === id);
+  const clearTasks = () => setToDoList(toDoList.filter((task) => !task.done));
+
+  const startTimer = (id: string) => {
+    const { paused } = toDoList.find((task) => task.id === id)!;
     if (paused) {
       const timer = setInterval(() => {
         setToDoList((prevToDoList) => {
@@ -64,12 +49,12 @@ export default function App() {
             const newTask = task;
             if (newTask.id === id) {
               if (!task.paused && !newTask.reversed) {
-                newTask.time += 1;
+                newTask.time! += 1;
               }
               if (!newTask.paused && newTask.reversed) {
-                newTask.time -= 1;
+                newTask.time! -= 1;
               }
-              if (newTask.time <= 0) {
+              if (newTask.time! <= 0) {
                 newTask.time = 0;
                 stopTimer(id);
               }
@@ -86,8 +71,8 @@ export default function App() {
     }
   };
 
-  const stopTimer = (id) => {
-    const { paused } = toDoList.find((task) => task.id === id);
+  const stopTimer = (id: string) => {
+    const { paused } = toDoList.find((task) => task.id === id)!;
     if (!paused) {
       const index = toDoList.findIndex((task) => task.id === id);
       const oldTask = toDoList[index];
@@ -96,24 +81,6 @@ export default function App() {
       setToDoList(toDoList.with(index, newTask));
     }
   };
-
-  const clearTasks = () => setToDoList(toDoList.filter((task) => !task.done));
-
-  function filterTasks(items, itemsFilter) {
-    return items.filter((task) => {
-      switch (itemsFilter) {
-        case 'completed':
-          return task.done;
-        case 'active':
-          return !task.done;
-        default:
-          return items;
-      }
-    });
-  }
-
-  const tasks = filterTasks(toDoList, filter);
-  const uncompletedTasks = filterTasks(toDoList, 'active').length;
 
   return (
     <div className="app">
@@ -133,7 +100,7 @@ export default function App() {
       </main>
       <footer>
         <Tools
-          setFilter={(itemsFilter) => setFilter(itemsFilter)}
+          setFilter={(itemsFilter: string) => setFilter(itemsFilter)}
           clearTasks={clearTasks}
           total={uncompletedTasks}
           filter={filter}
