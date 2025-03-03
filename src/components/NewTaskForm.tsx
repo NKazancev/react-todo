@@ -23,7 +23,7 @@ const NewTaskForm: FC<INewTaskForm> = ({ addTask }) => {
         date: new Date(),
         paused: true,
         reversed: false,
-        time: Number(minutes) * 60 + Number(seconds),
+        time,
       };
       if (time === 0) {
         task = { ...task, reversed: false };
